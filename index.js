@@ -74,13 +74,18 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id
+  console.log("deleting ", id);
+  
   persons = persons.filter(note => note.id !== id)
+
+  console.log(persons);
+  
 
   response.status(204).end()
 })
 
 const generateId = () => {
-  return Math.floor(Math.random()*100000)
+  return `${Math.floor(Math.random()*100000)}`
 }
 
 app.post('/api/persons', (request, response) => {
