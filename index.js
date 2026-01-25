@@ -72,13 +72,42 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
+app.put('/api/persons/:id', (request, response) => {
+  const id = request.params.id
+  const body = request.body
+
+  // validate (match your POST rules)
+  if (!body.name) {
+    return response.status(400).json({ error: 'name missing' })
+  }
+  if (!body.number) {
+    return response.status(400).json({ error: 'number missing' })
+  }
+
+  const existing = persons.find(p => p.id === id)
+  if (!existing) {
+    return response.status(404).end()
+  }
+
+  const updatedPerson = {
+    ...existing,
+    name: body.name,
+    number: body.number,
+  }
+
+  persons = persons.map(p => (p.id === id ? updatedPerson : p))
+
+  response.json(updatedPerson)
+})
+
+
 app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id
-  console.log("deleting ", id);
+  // console.log("deleting ", id);
   
   persons = persons.filter(note => note.id !== id)
 
-  console.log(persons);
+  // console.log(persons);
   
 
   response.status(204).end()
