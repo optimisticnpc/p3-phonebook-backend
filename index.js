@@ -33,7 +33,13 @@ let persons = [
       "id": "4",
       "name": "Mary Poppendieck", 
       "number": "39-23-6423122"
+    },
+    { 
+      "id": "42",
+      "name": "This is the second time starting FSO", 
+      "number": "100000000000000"
     }
+    
 ]
 
 
@@ -46,7 +52,7 @@ app.get('/api/persons', (request, response) => {
 })
 
 
-app.get('/info', (request, response) => {
+app.get('/api/info', (request, response) => {
   const currentTime = new Date()
 
   response.send(`
@@ -109,7 +115,7 @@ app.post('/api/persons', (request, response) => {
 })
 
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
