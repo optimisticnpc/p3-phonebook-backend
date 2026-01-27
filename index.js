@@ -43,6 +43,7 @@ app.get('/api/info', (request, response) => {
   `)
 })
 
+// Get by ID
 app.get('/api/persons/:id', (request, response) => {
   const id = request.params.id
 
