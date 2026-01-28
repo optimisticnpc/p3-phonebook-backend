@@ -90,17 +90,13 @@ app.put('/api/persons/:id', (request, response) => {
   response.json(updatedPerson)
 })
 
-
+// Delete
 app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  // console.log("deleting ", id);
-  
-  persons = persons.filter(person => person.id !== id)
-
-  // console.log(persons);
-  
-
-  response.status(204).end()
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 const generateId = () => {
@@ -141,6 +137,21 @@ person.save().then(result => {
   response.json(person)
 })
 
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
