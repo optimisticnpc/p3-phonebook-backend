@@ -56,7 +56,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 // Update
-app.put('/api/persons/:id', (request, response) => {
+app.put('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
   const body = request.body
 
@@ -68,20 +68,21 @@ app.put('/api/persons/:id', (request, response) => {
     return response.status(400).json({ error: 'number missing' })
   }
 
-  const existing = persons.find(p => p.id === id)
-  if (!existing) {
-    return response.status(404).end()
-  }
+  Person.findById(id)
+    .then(person => {
+      if (!person) {
+        return response.status(404).end()
+      }
 
-  const updatedPerson = {
-    ...existing,
-    name: body.name,
-    number: body.number,
-  }
+      person.name = body.name
+      person.number = body.number
 
-  persons = persons.map(p => (p.id === id ? updatedPerson : p))
+      return person.save().then((updatedPerson) => {
+        response.json(updatedPerson)
+      })
 
-  response.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
 // Delete
