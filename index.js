@@ -21,9 +21,6 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
-// app.get('/api/persons', (request, response) => {
-//   response.json(persons)
-// })
 
 // Create
 app.get('/api/persons', (request, response) => {
@@ -44,7 +41,7 @@ app.get('/api/info', (request, response) => {
 })
 
 // Get by ID
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
 
   Person.findById(id)
@@ -55,13 +52,10 @@ app.get('/api/persons/:id', (request, response) => {
         response.status(404).end()
       }
     })
-    .catch(error => {
-      console.error(error)
-      response.status(400).json({ error: 'malformatted id' })
-    })
+    .catch(error => next(error))
 })
 
-
+// Update
 app.put('/api/persons/:id', (request, response) => {
   const id = request.params.id
   const body = request.body
@@ -99,9 +93,6 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-const generateId = () => {
-  return `${Math.floor(Math.random()*100000)}`
-}
 
 // Create
 app.post('/api/persons', (request, response) => {
@@ -125,16 +116,15 @@ app.post('/api/persons', (request, response) => {
   //   })
   // }
 
-const person = new Person({
-    name: body.name,
-    number: body.number,
+  const person = new Person({
+      name: body.name,
+      number: body.number,
   })
 
 person.save().then(result => {
-  console.log('person saved!')
-})
-
-  response.json(person)
+    console.log('person saved!')
+    response.json(person)
+  })
 })
 
 const unknownEndpoint = (request, response) => {
@@ -154,6 +144,8 @@ const errorHandler = (error, request, response, next) => {
 
   next(error)
 }
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
