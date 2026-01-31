@@ -31,14 +31,20 @@ Person.find({}).then(person => {
 
 
 
-app.get('/api/info', (request, response) => {
-  const currentTime = new Date()
+app.get('/info', async (request, response, next) => {
+  try {
+    const currentTime = new Date()
+    const count = await Person.countDocuments({})
 
-  response.send(`
-    <p>Phonebook has info for ${persons.length} people</p>
-    <p>${currentTime}</p>
-  `)
+    response.send(`
+      <p>Phonebook has info for ${count} people</p>
+      <p>${currentTime}</p>
+    `)
+  } catch (error) {
+    next(error)
+  }
 })
+
 
 // Get by ID
 app.get('/api/persons/:id', (request, response, next) => {
