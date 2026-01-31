@@ -22,7 +22,7 @@ app.get('/', (request, response) => {
 })
 
 
-// Create
+// Get all people
 app.get('/api/persons', (request, response) => {
 Person.find({}).then(person => {
     response.json(person)    
@@ -102,7 +102,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 
 // Create
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if (!body.name) {
@@ -132,6 +132,7 @@ person.save().then(result => {
     console.log('person saved!')
     response.json(person)
   })
+  .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
@@ -141,14 +142,11 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
-  console.log("This is an error");
-  
-  // console.error(error.message)
-
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
   } 
-
   next(error)
 }
 
