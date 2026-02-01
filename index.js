@@ -24,8 +24,8 @@ app.get('/', (request, response) => {
 
 // Get all people
 app.get('/api/persons', (request, response) => {
-Person.find({}).then(person => {
-    response.json(person)    
+  Person.find({}).then(person => {
+    response.json(person)
   })
 })
 
@@ -94,7 +94,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 // Delete
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -106,33 +106,33 @@ app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if (!body.name) {
-    return response.status(400).json({ 
-      error: 'name missing' 
+    return response.status(400).json({
+      error: 'name missing'
     })
   }
 
   if (!body.number) {
-    return response.status(400).json({ 
-      error: 'number missing' 
+    return response.status(400).json({
+      error: 'number missing'
     })
   }
 
   // if (persons.find(person => person.name === body.name)) {
-  //   return response.status(400).json({ 
-  //     error: 'name must be unique' 
+  //   return response.status(400).json({
+  //     error: 'name must be unique'
   //   })
   // }
 
   const person = new Person({
-      name: body.name,
-      number: body.number,
+    name: body.name,
+    number: body.number,
   })
 
-person.save().then(result => {
+  person.save().then(() => {
     console.log('person saved!')
     response.json(person)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
@@ -146,7 +146,7 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
-  } 
+  }
   next(error)
 }
 
