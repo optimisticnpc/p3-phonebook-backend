@@ -8,14 +8,14 @@ const url = process.env.MONGODB_URI
 console.log('connecting to', url)
 mongoose.connect(url, { family: 4 })
 
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch(error => {
     console.log('error connecting to MongoDB:', error.message)
   })
 
-const phoneRegex = /^\d{2,3}-\d+$/ 
+const phoneRegex = /^\d{2,3}-\d+$/
 
 const personSchema = new mongoose.Schema({
   name: {
@@ -25,14 +25,13 @@ const personSchema = new mongoose.Schema({
   },
   number: {
     type: String,
-    minLength: 8, 
+    minLength: 8,
     required: true,
     validate: {
       validator: (v) => phoneRegex.test(v),
       message: 'Your number needs to be in the form ##-###### or ###-######. The second part after the hyphen can be any length.'
     }
   }
-  
 })
 
 personSchema.set('toJSON', {

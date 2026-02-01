@@ -14,7 +14,7 @@ const mongoose = require('mongoose')
 // mongodb+srv://<db_username>:<db_password>@cluster0.vr2pg.mongodb.net/?appName=Cluster0
 
 
-const url = `mongodb://localhost:27017/phonebook?retryWrites=true&w=majority&appName=Cluster0`
+const url = 'mongodb://localhost:27017/phonebook?retryWrites=true&w=majority&appName=Cluster0'
 
 mongoose.set('strictQuery',false)
 
